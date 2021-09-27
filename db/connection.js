@@ -1,5 +1,4 @@
 const mysql = require('mysql2');
-const path = require('path/posix');
 
 require('dotenv').config()
 
