@@ -2,7 +2,7 @@ const express = require('express');
 const mysql = require('mysql2');
 const db = require('./db/connection');
 
-const PORT = process.env.PORT || 3009;
+const PORT = process.env.PORT || 3010;
 const app = express();
 
 // Express middleware
