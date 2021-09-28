@@ -1,0 +1,27 @@
+{
+  "name": "project-poll-it",
+  "version": "1.0.0",
+  "description": "## Requirements: - Node.js - Express.js - Handelbars.js - MySQL - Sequelize ORM - GET and POST routes (Express.js) - Use at least one new library, package, or technology that we haven't discussed. \t1. Polling npm package - Have a polished UI (HTML/CSS) - Include authentication (express-session and cookies) - Protect API keys and sensitive information with environment variables.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ven-kim/project-poll-it.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ven-kim/project-poll-it/issues"
+  },
+  "homepage": "https://github.com/ven-kim/project-poll-it#readme",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "mysql2": "^2.3.0",
+    "sequelize": "^6.6.5"
+  }
+}
