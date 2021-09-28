@@ -43,7 +43,7 @@ app.use((req, res, next) => {
   next();
 });
 
-const hbsContent = {userName: '', loggedin: false, titile: "You are not logged in today", body: "Hello world"};
+const hbsContent = {userName: '', loggedin: false, title: "You are not logged in today", body: "Hello world"};
 
 // middleware function to check for logged-in users
 var sessionChecker = (req, res, next) => {
@@ -71,7 +71,7 @@ app.route('/signup')
   .post((req, res) => {
       User.create({
           username: req.body.username,
-          //email: req.body.email,
+          email: req.body.email,
           password: req.body.password
       })
       .then(user => {
