@@ -1,9 +1,9 @@
 const Sequelize = require('sequelize');
 const bcrypt = require('bcrypt');
 
-const sequelize = new Sequelize('chatroom', 'root', 'password', {
+const sequelize = new Sequelize('chatroom', 'root', 'Javamancod321!', {
     host: 'localhost',
-    port: 3011,
+    port: 3306,
     dialect: 'mysql',
     pool: {
         max: 5,
