@@ -23,6 +23,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // initialize cookie-parser to allow us access the cookies stored in the browser. 
 app.use(cookieParser());
 
+// Linking css style sheet with handlebars
+
+app.use(express.static('public'));
+
 // initialize express-session to allow us to track the logged-in user across sessions.
 app.use(session({
     key: 'users_id',
