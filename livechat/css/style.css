@@ -1,0 +1,38 @@
+body {
+  padding: 30px;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+  background-image: linear-gradient(to right top, #051937, #003b5e, #006184, #0089a6, #18b3c2);
+}
+
+#message-container {
+  width: 80%;
+  max-width: 1200px;
+}
+
+#message-container div {
+  background-color: transparent;
+  padding: 5px;
+  color: white;
+}
+
+#message-container div:nth-child(2n) {
+  background-color: transparent;
+  color: white;
+}
+
+#send-container {
+  position: fixed;
+  margin-bottom: 30px;
+  bottom: 0;
+  background-color: white;
+  max-width: 1200px;
+  width: 80%;
+  display: flex;
+}
+
+#message-input {
+  flex-grow: 1;
+}
