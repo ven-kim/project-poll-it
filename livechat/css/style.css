@@ -1,8 +1,10 @@
 body {
-  padding: 0;
+  padding: 30px;
   margin: 0;
   display: flex;
   justify-content: center;
+  height: 100vh;
+  background-image: linear-gradient(to right top, #051937, #003b5e, #006184, #0089a6, #18b3c2);
 }
 
 #message-container {
@@ -11,17 +13,19 @@ body {
 }
 
 #message-container div {
-  background-color: #CCC;
+  background-color: transparent;
   padding: 5px;
+  color: white;
 }
 
 #message-container div:nth-child(2n) {
-  background-color: #FFF;
+  background-color: transparent;
+  color: white;
 }
 
 #send-container {
   position: fixed;
-  padding-bottom: 30px;
+  margin-bottom: 30px;
   bottom: 0;
   background-color: white;
   max-width: 1200px;
