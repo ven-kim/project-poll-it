@@ -29,7 +29,7 @@ app.use(express.static('public'));
 
 // initialize express-session to allow us to track the logged-in user across sessions.
 app.use(session({
-    key: 'users_id',
+    key: 'user_sid',
     secret: 'somerandonstuffs',
     resave: false,
     saveUninitialized: false,
@@ -45,8 +45,8 @@ app.set('view engine', 'hbs');
 // This middleware will check if user's cookie is still saved in browser and user is not set, then automatically log the user out.
 // This usually happens when you stop your express server after login, your cookie still remains saved in the browser.
 app.use((req, res, next) => {
-    if (req.cookies.users_id && !req.session.user) {
-        res.clearCookie('users_id');        
+    if (req.cookies.user_sid && !req.session.user) {
+        res.clearCookie('user_sid');        
     }
     next();
 });
@@ -55,7 +55,7 @@ var hbsContent = {userName: '', loggedin: false, title: "You are not logged in t
 
 // middleware function to check for logged-in users
 var sessionChecker = (req, res, next) => {
-    if (req.session.user && req.cookies.users_id) {
+    if (req.session.user && req.cookies.user_sid) {
 		
         res.redirect('/dashboard');
     } else {
@@ -118,7 +118,7 @@ app.route('/login')
 
 // route for user's dashboard
 app.get('/dashboard', (req, res) => {
-    if (req.session.user && req.cookies.users_id) {
+    if (req.session.user && req.cookies.user_sid) {
 		hbsContent.loggedin = true; 
 		hbsContent.userName = req.session.user.username; 
 		//console.log(JSON.stringify(req.session.user)); 
@@ -134,10 +134,10 @@ app.get('/dashboard', (req, res) => {
 
 // route for user logout
 app.get('/logout', (req, res) => {
-    if (req.session.user && req.cookies.users_id) {
+    if (req.session.user && req.cookies.user_sid) {
 		hbsContent.loggedin = false; 
 		hbsContent.title = "You are logged out!"; 
-        res.clearCookie('users_id');
+        res.clearCookie('user_sid');
 		console.log(JSON.stringify(hbsContent)); 
         res.redirect('/');
     } else {
