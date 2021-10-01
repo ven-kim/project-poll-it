@@ -5,14 +5,25 @@ var session = require('express-session');
 var morgan = require('morgan');
 var User = require('./user');
 var hbs = require('express-handlebars'); 
-var path = require('path'); 
+var path = require('path');
+const sequelize = require('sequelize');
+const server = require('http').Server(app)
+const io = require('socket.io')(server) 
 
 
 // invoke an instance of express application.
 var app = express();
 
 // set our application port
-app.set('port', 9000);
+app.set('port', 3000);
+server.listen(3000, {
+    cors: {
+      origin: "*",
+    },
+});
+
+app.set('socketviews', './socketviews')
+app.set('view engine', 'ejs')
 
 // set morgan to log info about our requests for development use.
 app.use(morgan('dev'));
@@ -145,6 +156,53 @@ app.get('/logout', (req, res) => {
     }
 });
 
+// Live chat server
+const rooms = { }
+
+app.get('/', (req, res) => {
+  res.render('index', { rooms: rooms })
+})
+
+app.post('/room', (req, res) => {
+  if (rooms[req.body.room] != null) {
+    return res.redirect('/')
+  }
+  rooms[req.body.room] = { users: {} }
+  res.redirect(req.body.room)
+  // Send message that new room was created
+  io.emit('room-created', req.body.room)
+})
+
+app.get('/:room', (req, res) => {
+  if (rooms[req.params.room] == null) {
+    return res.redirect('/')
+  }
+  res.render('room', { roomName: req.params.room })
+})
+
+io.on('connection', socket => {
+    socket.on('new-user', (room, name) => {
+      socket.join(room)
+      rooms[room].users[socket.id] = name
+      socket.to(room).emit('user-connected', name);
+    })
+    socket.on('send-chat-message', (room, message) => {
+      socket.to(room).emit('chat-message', { message: message, name: rooms[room].users[socket.id] })
+    })
+    socket.on('disconnect', () => {
+      getUserRooms(socket).forEach(room => {
+        socket.to(room).emit('user-disconnected', rooms[room].users[socket.id])
+        delete rooms[room].users[socket.id]
+      })
+    })
+})
+
+function getUserRooms(socket) {
+    return Object.entries(rooms).reduce((names, [name, room]) => {
+      if (room.users[socket.id] != null) names.push(name)
+      return names
+    }, [])
+}
 
 // route for handling 404 requests(unavailable routes)
 app.use(function (req, res, next) {
@@ -154,3 +212,5 @@ app.use(function (req, res, next) {
 
 // start the express server
 app.listen(app.get('port'), () => console.log(`App started on port ${app.get('port')}`));
+
+sequelize.sync.then //need to find the correct syntax to wrap it around the app.listen
