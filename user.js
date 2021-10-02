@@ -1,7 +1,9 @@
 const Sequelize = require('sequelize');
 const bcrypt = require('bcrypt');
 
-const sequelize = new Sequelize('chatroom', 'root', 'Javamancod321!', {
+// fix connection to localdb
+
+const sequelize = new Sequelize('chatroom', 'root', '19seito0721fish', {
     host: 'localhost',
     port: 3306,
     dialect: 'mysql',
