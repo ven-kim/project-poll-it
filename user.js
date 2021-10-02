@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 
 const sequelize = new Sequelize('chatroom', 'root', 'Javamancod321!', {
     host: 'localhost',
-    port: 3000,
+    port: 3306,
     dialect: 'mysql',
     pool: {
         max: 5,

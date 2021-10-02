@@ -6,7 +6,7 @@ var morgan = require('morgan');
 var User = require('./user');
 var hbs = require('express-handlebars'); 
 var path = require('path');
-const sequelize = require('sequelize');
+const sequelize = require('./user');
 const server = require('http').Server(app)
 const io = require('socket.io')(server) 
 
@@ -15,8 +15,8 @@ const io = require('socket.io')(server)
 var app = express();
 
 // set our application port
-app.set('port', 3000);
-server.listen(3000, {
+app.set('port', 3012);
+server.listen(3012, {
     cors: {
       origin: "*",
     },
@@ -210,8 +210,9 @@ app.use(function (req, res, next) {
 });
 
 
-User.sync({ force: false }).then(() => {
-    app.listen(app.get('port'), () => console.log(`App started on port ${app.get('port')}`));
+sequelize.sync({ force: true }).then(() => {
+    // app.listen(app.get('port'), () => 
+    console.log(`App started on port ${app.get('port')}`);
 });
 
 // start the express server
