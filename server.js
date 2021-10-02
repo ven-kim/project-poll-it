@@ -3,10 +3,10 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var morgan = require('morgan');
-var User = require('./user');
 var hbs = require('express-handlebars'); 
 var path = require('path');
-const sequelize = require('sequelize');
+const sequelize = require('./user');
+const User = require('./user');
 const server = require('http').Server(app)
 const io = require('socket.io')(server) 
 
@@ -15,7 +15,7 @@ const io = require('socket.io')(server)
 var app = express();
 
 // set our application port
-app.set('port', 3000);
+// app.set('port', 3000);
 server.listen(3000, {
     cors: {
       origin: "*",
@@ -211,6 +211,10 @@ app.use(function (req, res, next) {
 
 
 // start the express server
-app.listen(app.get('port'), () => console.log(`App started on port ${app.get('port')}`));
+// app.listen(app.get('port'), () => console.log(`App started on port ${app.get('port')}`));
 
-sequelize.sync.then //need to find the correct syntax to wrap it around the app.listen
+// sequelize.sync({ force: true }).then(() => {
+//     server.listen(app.get('port'), () => console.log(`App started on port ${app.get('port')}`));
+// })
+
+// sequelize.sync.then //need to find the correct syntax to wrap it around the app.listen
