@@ -210,7 +210,11 @@ app.use(function (req, res, next) {
 });
 
 
-// start the express server
-app.listen(app.get('port'), () => console.log(`App started on port ${app.get('port')}`));
+User.sync({ force: false }).then(() => {
+    app.listen(app.get('port'), () => console.log(`App started on port ${app.get('port')}`));
+});
 
-sequelize.sync.then //need to find the correct syntax to wrap it around the app.listen
+// start the express server
+// app.listen(app.get('port'), () => console.log(`App started on port ${app.get('port')}`));
+
+// sequelize.sync.then //need to find the correct syntax to wrap it around the app.listen
