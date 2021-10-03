@@ -19,6 +19,15 @@
             <p>Login to find a group and join a chatroom !</p>
         </div>
 
+                            <ul class="nav navbar-nav navbar-right">
+					{{# if loggedin}}
+						<li><a href="/logout">Log Out</a></li>
+					{{else }}
+						<li><a href="/login">Log In</a></li>
+					{{/if}}
+                        
+                    </ul>
+
        {{{body}}}
     </body>
 </html>
