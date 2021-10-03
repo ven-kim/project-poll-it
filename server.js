@@ -1,29 +1,29 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
-var session = require('express-session');
-var morgan = require('morgan');
-var User = require('./user');
-var hbs = require('express-handlebars'); 
-var path = require('path');
-const sequelize = require('./user');
+const express = require('express');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const morgan = require('morgan');
+const hbs = require('express-handlebars'); 
+const path = require('path');
+// const sequelize = require('./user');
+const User = require('./user');
+const app = express();
 const server = require('http').Server(app)
 const io = require('socket.io')(server) 
 
-
 // invoke an instance of express application.
-var app = express();
 
 // set our application port
-app.set('port', 3012);
-server.listen(3012, {
-    cors: {
-      origin: "*",
-    },
-});
+// app.set('port', 3000);
+// server.listen(3000, {
+//     cors: {
+//       origin: "*",
+//     },
+// });
 
-app.set('socketviews', './socketviews')
+app.set('views', './views')
 app.set('view engine', 'ejs')
+
 
 // set morgan to log info about our requests for development use.
 app.use(morgan('dev'));
@@ -41,7 +41,7 @@ app.use(express.static('public'));
 // initialize express-session to allow us to track the logged-in user across sessions.
 app.use(session({
     key: 'user_sid',
-    secret: 'somerandonstuffs',
+    secret: 'somerandomstuff',
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -62,10 +62,10 @@ app.use((req, res, next) => {
     next();
 });
 
-var hbsContent = {userName: '', loggedin: false, title: "You are not logged in today", body: "Hello World"}; 
+const hbsContent = {userName: '', loggedin: false, title: "You are not logged in today", body: "Hello World"}; 
 
-// middleware function to check for logged-in users
-var sessionChecker = (req, res, next) => {
+// middleware function to check for logged-in user
+const sessionChecker = (req, res, next) => {
     if (req.session.user && req.cookies.user_sid) {
 		
         res.redirect('/dashboard');
@@ -111,7 +111,7 @@ app.route('/login')
         res.render('login', hbsContent);
     })
     .post((req, res) => {
-        var username = req.body.username,
+        const username = req.body.username,
             password = req.body.password;
 
         User.findOne({ where: { username: username } }).then(function (user) {
@@ -209,13 +209,17 @@ app.use(function (req, res, next) {
   res.status(404).send("Sorry can't find that!")
 });
 
-
-sequelize.sync({ force: true }).then(() => {
-    // app.listen(app.get('port'), () => 
-    console.log(`App started on port ${app.get('port')}`);
+server.listen(3000, {
+    cors: {
+      origin: "*",
+    },
 });
 
 // start the express server
 // app.listen(app.get('port'), () => console.log(`App started on port ${app.get('port')}`));
+
+// sequelize.sync({ force: true }).then(() => {
+//     server.listen(app.get('port'), () => console.log(`App started on port ${app.get('port')}`));
+// })
 
 // sequelize.sync.then //need to find the correct syntax to wrap it around the app.listen
