@@ -7,20 +7,18 @@ var hbs = require('express-handlebars');
 var path = require('path');
 const sequelize = require('./user');
 const User = require('./user');
+// invoke an instance of express application.
+const app = express();
 const server = require('http').Server(app)
 const io = require('socket.io')(server) 
 
-
-// invoke an instance of express application.
-var app = express();
-
 // set our application port
 // app.set('port', 3000);
-server.listen(3000, {
-    cors: {
-      origin: "*",
-    },
-});
+// server.listen(3000, {
+//     cors: {
+//       origin: "*",
+//     },
+// });
 
 app.set('socketviews', './socketviews')
 app.set('view engine', 'ejs')
@@ -86,7 +84,7 @@ app.route('/signup')
     //.get(sessionChecker, (req, res) => {
     .get((req, res) => {
         //res.sendFile(__dirname + '/public/signup.html');
-        res.render('signup', hbsContent);
+        res.render('signup.hbs', hbsContent);
     })
     .post((req, res) => {
         User.create({
@@ -108,7 +106,7 @@ app.route('/signup')
 app.route('/login')
     .get(sessionChecker, (req, res) => {
         //res.sendFile(__dirname + '/public/login.html');
-        res.render('login', hbsContent);
+        res.render('login.hbs', hbsContent);
     })
     .post((req, res) => {
         var username = req.body.username,
@@ -117,8 +115,8 @@ app.route('/login')
         User.findOne({ where: { username: username } }).then(function (user) {
             if (!user) {
                 res.redirect('/login');
-            } else if (!user.validPassword(password)) {
-                res.redirect('/login');
+            // } else if (!user.validPassword(password)) {
+            //     res.redirect('/login');
             } else {
                 req.session.user = user.dataValues;
                 res.redirect('/dashboard');
@@ -126,6 +124,7 @@ app.route('/login')
         });
     });
 
+const rooms = { }
 
 // route for user's dashboard
 app.get('/dashboard', (req, res) => {
@@ -135,8 +134,10 @@ app.get('/dashboard', (req, res) => {
 		//console.log(JSON.stringify(req.session.user)); 
 		console.log(req.session.user.username); 
 		hbsContent.title = "You are logged in"; 
+        hbsContent.rooms = rooms
         //res.sendFile(__dirname + '/public/dashboard.html');
-        res.render('index', hbsContent);
+        // res.render('index.hbs', hbsContent);
+        res.render('index.ejs', hbsContent);
     } else {
         res.redirect('/login');
     }
@@ -157,10 +158,10 @@ app.get('/logout', (req, res) => {
 });
 
 // Live chat server
-const rooms = { }
+
 
 app.get('/', (req, res) => {
-  res.render('index', { rooms: rooms })
+  res.render('index.ejs', { rooms: rooms })
 })
 
 app.post('/room', (req, res) => {
@@ -177,7 +178,7 @@ app.get('/:room', (req, res) => {
   if (rooms[req.params.room] == null) {
     return res.redirect('/')
   }
-  res.render('room', { roomName: req.params.room })
+  res.render('room.ejs', { roomName: req.params.room })
 })
 
 io.on('connection', socket => {
@@ -212,6 +213,12 @@ app.use(function (req, res, next) {
 
 // start the express server
 // app.listen(app.get('port'), () => console.log(`App started on port ${app.get('port')}`));
+
+server.listen(3000, {
+    cors: {
+      origin: "*",
+    },
+});
 
 // sequelize.sync({ force: true }).then(() => {
 //     server.listen(app.get('port'), () => console.log(`App started on port ${app.get('port')}`));
