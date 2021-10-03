@@ -63,7 +63,7 @@ app.use((req, res, next) => {
     next();
 });
 
-const hbsContent = {userName: '', loggedin: false, title: "You are not logged in today", body: "Hello World"}; 
+const hbsContent = { userName: ' ', loggedin: false, title: "You are not logged in today", body: "Hello World" }; 
 
 // middleware function to check for logged-in user
 const sessionChecker = (req, res, next) => {
