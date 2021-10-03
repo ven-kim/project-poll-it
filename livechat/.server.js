@@ -11,7 +11,7 @@ app.use(express.urlencoded({ extended: true }))
 const rooms = { }
 
 app.get('/', (req, res) => {
-  res.render('index', { rooms: rooms })
+  res.render('index.ejs', { rooms: rooms })
 })
 
 app.post('/room', (req, res) => {
@@ -28,7 +28,7 @@ app.get('/:room', (req, res) => {
   if (rooms[req.params.room] == null) {
     return res.redirect('/')
   }
-  res.render('room', { roomName: req.params.room })
+  res.render('room.ejs', { roomName: req.params.room })
 })
 
 server.listen(3000, {

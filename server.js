@@ -37,6 +37,7 @@ app.use(cookieParser());
 // Linking css style sheet with handlebars
 
 app.use(express.static('public'));
+// app.use(express.static('views'));
 
 // initialize express-session to allow us to track the logged-in user across sessions.
 app.use(session({
@@ -125,7 +126,7 @@ app.route('/login')
             }
         });
     });
-
+const rooms = { };
 
 // route for user's dashboard
 app.get('/dashboard', (req, res) => {
@@ -135,8 +136,9 @@ app.get('/dashboard', (req, res) => {
 		//console.log(JSON.stringify(req.session.user)); 
 		console.log(req.session.user.username); 
 		hbsContent.title = "You are logged in"; 
+        hbsContent.rooms = rooms;
         //res.sendFile(__dirname + '/public/dashboard.html');
-        res.render('index', hbsContent);
+        res.render('index.ejs', hbsContent);
     } else {
         res.redirect('/login');
     }
@@ -156,11 +158,11 @@ app.get('/logout', (req, res) => {
     }
 });
 
-// Live chat server
-const rooms = { }
+// // Live chat server
+// const rooms = { }
 
 app.get('/', (req, res) => {
-  res.render('index', { rooms: rooms })
+  res.render('index.ejs', { rooms: rooms })
 })
 
 app.post('/room', (req, res) => {
@@ -177,7 +179,7 @@ app.get('/:room', (req, res) => {
   if (rooms[req.params.room] == null) {
     return res.redirect('/')
   }
-  res.render('room', { roomName: req.params.room })
+  res.render('room.ejs', { roomName: req.params.room })
 })
 
 io.on('connection', socket => {
