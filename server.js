@@ -225,3 +225,4 @@ server.listen(3000, {
 // })
 
 // sequelize.sync.then //need to find the correct syntax to wrap it around the app.listen
+// Added comment for push
