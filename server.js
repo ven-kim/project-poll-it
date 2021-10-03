@@ -1,18 +1,29 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
-var session = require('express-session');
-var morgan = require('morgan');
-var User = require('./user');
-var hbs = require('express-handlebars'); 
-var path = require('path'); 
-
+const express = require('express');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const morgan = require('morgan');
+const hbs = require('express-handlebars'); 
+const path = require('path');
+// const sequelize = require('./user');
+const User = require('./user');
+const app = express();
+const server = require('http').Server(app)
+const io = require('socket.io')(server) 
 
 // invoke an instance of express application.
-var app = express();
 
 // set our application port
-app.set('port', 9000);
+// app.set('port', 3000);
+// server.listen(3000, {
+//     cors: {
+//       origin: "*",
+//     },
+// });
+
+app.set('views', './views')
+app.set('view engine', 'ejs')
+
 
 // set morgan to log info about our requests for development use.
 app.use(morgan('dev'));
@@ -26,11 +37,12 @@ app.use(cookieParser());
 // Linking css style sheet with handlebars
 
 app.use(express.static('public'));
+// app.use(express.static('views'));
 
 // initialize express-session to allow us to track the logged-in user across sessions.
 app.use(session({
-    key: 'users_id',
-    secret: 'somerandonstuffs',
+    key: 'user_sid',
+    secret: 'somerandomstuff',
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -45,17 +57,17 @@ app.set('view engine', 'hbs');
 // This middleware will check if user's cookie is still saved in browser and user is not set, then automatically log the user out.
 // This usually happens when you stop your express server after login, your cookie still remains saved in the browser.
 app.use((req, res, next) => {
-    if (req.cookies.users_id && !req.session.user) {
-        res.clearCookie('users_id');        
+    if (req.cookies.user_sid && !req.session.user) {
+        res.clearCookie('user_sid');        
     }
     next();
 });
 
-var hbsContent = {userName: '', loggedin: false, title: "You are not logged in today", body: "Hello World"}; 
+const hbsContent = { userName: ' ', loggedin: false, title: "You are not logged in today", body: "Hello World" }; 
 
-// middleware function to check for logged-in users
-var sessionChecker = (req, res, next) => {
-    if (req.session.user && req.cookies.users_id) {
+// middleware function to check for logged-in user
+const sessionChecker = (req, res, next) => {
+    if (req.session.user && req.cookies.user_sid) {
 		
         res.redirect('/dashboard');
     } else {
@@ -100,7 +112,7 @@ app.route('/login')
         res.render('login', hbsContent);
     })
     .post((req, res) => {
-        var username = req.body.username,
+        const username = req.body.username,
             password = req.body.password;
 
         User.findOne({ where: { username: username } }).then(function (user) {
@@ -114,18 +126,19 @@ app.route('/login')
             }
         });
     });
-
+const rooms = { };
 
 // route for user's dashboard
 app.get('/dashboard', (req, res) => {
-    if (req.session.user && req.cookies.users_id) {
+    if (req.session.user && req.cookies.user_sid) {
 		hbsContent.loggedin = true; 
 		hbsContent.userName = req.session.user.username; 
 		//console.log(JSON.stringify(req.session.user)); 
 		console.log(req.session.user.username); 
 		hbsContent.title = "You are logged in"; 
+        hbsContent.rooms = rooms;
         //res.sendFile(__dirname + '/public/dashboard.html');
-        res.render('index', hbsContent);
+        res.render('index.ejs', hbsContent);
     } else {
         res.redirect('/login');
     }
@@ -134,10 +147,10 @@ app.get('/dashboard', (req, res) => {
 
 // route for user logout
 app.get('/logout', (req, res) => {
-    if (req.session.user && req.cookies.users_id) {
+    if (req.session.user && req.cookies.user_sid) {
 		hbsContent.loggedin = false; 
 		hbsContent.title = "You are logged out!"; 
-        res.clearCookie('users_id');
+        res.clearCookie('user_sid');
 		console.log(JSON.stringify(hbsContent)); 
         res.redirect('/');
     } else {
@@ -145,12 +158,71 @@ app.get('/logout', (req, res) => {
     }
 });
 
+// // Live chat server
+// const rooms = { }
+
+app.get('/', (req, res) => {
+  res.render('index.ejs', { rooms: rooms })
+})
+
+app.post('/room', (req, res) => {
+  if (rooms[req.body.room] != null) {
+    return res.redirect('/')
+  }
+  rooms[req.body.room] = { users: {} }
+  res.redirect(req.body.room)
+  // Send message that new room was created
+  io.emit('room-created', req.body.room)
+})
+
+app.get('/:room', (req, res) => {
+  if (rooms[req.params.room] == null) {
+    return res.redirect('/')
+  }
+  res.render('room.ejs', { roomName: req.params.room })
+})
+
+io.on('connection', socket => {
+    socket.on('new-user', (room, name) => {
+      socket.join(room)
+      rooms[room].users[socket.id] = name
+      socket.to(room).emit('user-connected', name);
+    })
+    socket.on('send-chat-message', (room, message) => {
+      socket.to(room).emit('chat-message', { message: message, name: rooms[room].users[socket.id] })
+    })
+    socket.on('disconnect', () => {
+      getUserRooms(socket).forEach(room => {
+        socket.to(room).emit('user-disconnected', rooms[room].users[socket.id])
+        delete rooms[room].users[socket.id]
+      })
+    })
+})
+
+function getUserRooms(socket) {
+    return Object.entries(rooms).reduce((names, [name, room]) => {
+      if (room.users[socket.id] != null) names.push(name)
+      return names
+    }, [])
+}
 
 // route for handling 404 requests(unavailable routes)
 app.use(function (req, res, next) {
   res.status(404).send("Sorry can't find that!")
 });
 
+server.listen(3000, {
+    cors: {
+      origin: "*",
+    },
+});
 
 // start the express server
-app.listen(app.get('port'), () => console.log(`App started on port ${app.get('port')}`));
+// app.listen(app.get('port'), () => console.log(`App started on port ${app.get('port')}`));
+
+// sequelize.sync({ force: true }).then(() => {
+//     server.listen(app.get('port'), () => console.log(`App started on port ${app.get('port')}`));
+// })
+
+// sequelize.sync.then //need to find the correct syntax to wrap it around the app.listen
+// Added comment for push

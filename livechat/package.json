@@ -1,25 +1,5 @@
 {
-  "name": "project-poll-it",
-  "version": "1.0.0",
-  "description": "- Node.js\r - Express.js\r - Handelbars.js\r - MySQL\r - Sequelize ORM\r - GET and POST routes (Express.js)\r - Use at least one new library, package, or technology that we haven't discussed.\r \t1. Polling npm package\r - Have a polished UI (HTML/CSS)\r - Include authentication (express-session and cookies)\r - Protect API keys and sensitive information with environment variables.",
-  "main": "index.js",
-  "scripts": {
-    "devStart": "nodemon server.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ven-kim/project-poll-it.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/ven-kim/project-poll-it/issues"
-  },
-  "homepage": "https://github.com/ven-kim/project-poll-it#readme",
   "dependencies": {
     "socket.io": "^4.2.0"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.13"
   }
 }
