@@ -42,7 +42,7 @@ const User = sequelize.define('users', {
 
 User.beforeCreate((user, options) => {
     const salt = bcrypt.genSaltSync();
-    user.email.password = bcrypt.hashSync(user.email.password, salt);
+    user.password = bcrypt.hashSync(user.password, salt);
 });
 
 User.prototype.validPassword = function(password) {
