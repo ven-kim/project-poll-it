@@ -21,6 +21,10 @@ const io = require('socket.io')(server)
 //     },
 // });
 
+// Added this port so that we can upload this to heroku without any issues
+
+const PORT = process.env.PORT || 3000;
+
 app.set('views', './views')
 app.set('view engine', 'ejs')
 
@@ -211,7 +215,7 @@ app.use(function (req, res, next) {
   res.status(404).send("Sorry can't find that!")
 });
 
-server.listen(3000, {
+server.listen(PORT, {
     cors: {
       origin: "*",
     },

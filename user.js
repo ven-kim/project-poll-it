@@ -3,7 +3,10 @@ const bcrypt = require('bcrypt');
 
 // fix connection to localdb
 
-const sequelize = new Sequelize('chatroom', 'root', '19seito0721fish', {
+require('dotenv').config();
+const env = process.env;
+
+const sequelize = new Sequelize(env.DB_NAME, env.DB_USER, env.DB_PW, {
     host: 'localhost',
     port: 3306,
     dialect: 'mysql',
