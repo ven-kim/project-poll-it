@@ -7,16 +7,79 @@
   <title>Chat App</title>
   <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
   <script defer src="script.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  
+
+  <style>
+    body {
+      background-image: linear-gradient(to right top, #051937, #003b5e, #006184, #0089a6, #18b3c2);
+      
+      background-repeat: no-repeat;
+    }
+    .header-1 {
+      color: #18b3c2;
+      font-family: 'Dekko';font-size: 68px;
+      font-size: 100px;
+      margin-top: 20px;
+      margin-left: 20px;
+    }
+    
+    .newroom {
+      color: blue;
+      background-color: yellow;
+    
+    }
+    .input{
+      margin-right: 10px;
+      margin-left: 500px;
+    }
+
+    .form {
+      margin-bottom: 10px;
+      
+     
+    }
+    
+      /* border */
+    .room {
+      color: chocolate;
+      font-size: 30px;
+      margin-bottom: 20px;
+      margin-top: 50px;
+      border-style: solid;
+      
+    }
+
+    /* room styling */
+    .room-title {
+      color: black;
+      margin-left: 500px;
+    }
+
+    /* new room */
+    .btn {
+      font-size: 10px;
+      margin-left: 500px;
+    }
+
+    /* join button */
+    .join {
+      font-size: 20px;
+    }
+  </style>
+
 </head>
 <body>
-  <form action="/room" method="POST">
-    <input name="room" type="text" required>
-    <button type="submit">New Room</button>
+  <h1 class="header-1">Grouper</h1>
+
+  <form class="form" action="/room" method="POST">
+    <input class="input" name="room" type="text" required>
+    <button class="btn btn-primary" type="submit">New Room</button>
   </form>
-  <div id="room-container">
+  <div class="room" id="room-container">
     <% Object.keys(rooms).forEach(room => { %>
-      <div><%= room %></div>
-      <a href="/<%= room %>">Join</a>
+      <div class="room-title"><%= room %></div>
+      <a class="btn btn-primary join" href="/<%= room %>">Join</a>
     <% }) %>
   </div>
 </body>
