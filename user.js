@@ -3,21 +3,27 @@ const bcrypt = require('bcrypt');
 
 // fix connection to localdb
 
+let sequelize;
+
 require('dotenv').config();
 const env = process.env;
 
-const sequelize = new Sequelize(env.DB_NAME, env.DB_USER, env.DB_PW, {
-    host: 'localhost',
-    port: 3306,
-    dialect: 'mysql',
-    pool: {
-        max: 5,
-        min: 0,
-        acquire: 300000,
-        idle: 30000
-    },
-    operatorAliases: false
-});
+if (env.JAWSDB_URL) {
+    sequelize = new Sequelize(env.JAWSDB_URL);
+}   else {
+    sequelize = new Sequelize(env.DB_NAME, env.DB_USER, env.DB_PW, {
+        host: 'localhost',
+        port: 3306,
+        dialect: 'mysql',
+        pool: {
+            max: 5,
+            min: 0,
+            acquire: 300000,
+            idle: 30000
+        },
+        operatorAliases: false
+    });
+}
 
 const User = sequelize.define('users', {
     id: {
