@@ -3,6 +3,10 @@ const app = express()
 const server = require('http').Server(app)
 const io = require('socket.io')(server)
 
+// Added this port so that we can upload this to heroku without any issues
+
+const PORT = process.env.PORT || 3000;
+
 app.set('socketviews', './socketviews')
 app.set('view engine', 'ejs')
 app.use(express.static('public'))
@@ -31,7 +35,7 @@ app.get('/:room', (req, res) => {
   res.render('room.ejs', { roomName: req.params.room })
 })
 
-server.listen(3000, {
+server.listen(PORT, {
   cors: {
     origin: "*",
   },
