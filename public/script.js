@@ -1,4 +1,4 @@
-const socket = io('JAWSDB_URL')
+const socket = io();
 const messageContainer = document.getElementById('message-container')
 const roomContainer = document.getElementById('room-container')
 const messageForm = document.getElementById('send-container')
